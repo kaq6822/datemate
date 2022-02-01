@@ -1,6 +1,7 @@
 package com.datemate.api.member.model;
 
 import com.datemate.common.model.AbstractTimestampEntity;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -15,6 +16,7 @@ import java.util.List;
 @Entity
 @Table(name = "dm_user_master")
 public class Member extends AbstractTimestampEntity implements UserDetails {
+    @ApiModelProperty(hidden = true)
     @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userSeq;
@@ -22,15 +24,19 @@ public class Member extends AbstractTimestampEntity implements UserDetails {
     @Id
     private String email;
 
+    @ApiModelProperty(hidden = true)
     private String userName;
 
     @Column(nullable = false)
     private String password;
 
+    @ApiModelProperty(hidden = true)
     private String status = "0";
 
+    @ApiModelProperty(hidden = true)
     private String token;
 
+    @ApiModelProperty(hidden = true)
     @Transient
     private boolean ENABLED;
 
