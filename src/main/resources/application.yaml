@@ -2,11 +2,11 @@ spring:
   application:
     name: datemate
   datasource:
-    url: jdbc:mariadb://datemate.cjlwtqkaztco.us-east-1.rds.amazonaws.com:3306/datemate
+    url: {PRIVATE}
     driver-class-name: org.mariadb.jdbc.Driver
     hikari:
-      username: bjkang
-      password: roqkf2015$
+      username: {PRIVATE}
+      password: {PRIVATE}
       connection-test-query: SELECT 1
   jpa:
     open-in-view: false
@@ -18,11 +18,6 @@ security:
   oauth2:
     jwt:
       signKey: {PRIVATE}
-#    resource:
-#      token-info-uri: http://localhost:8080/oauth/check_token
-#    client:
-#      client-id: datemate
-#      client-secret: ssu
 
 server:
   port: 8080
