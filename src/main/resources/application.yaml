@@ -17,7 +17,7 @@ spring:
 security:
   oauth2:
     jwt:
-      signKey: ssu
+      signKey: {PRIVATE}
 #    resource:
 #      token-info-uri: http://localhost:8080/oauth/check_token
 #    client:
