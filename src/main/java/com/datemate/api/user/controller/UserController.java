@@ -56,6 +56,8 @@ public class UserController extends CommonController {
         }
 
         try {
+            user.setUserSeq(this.getLoginUserSeq());
+            user.setEmail(this.getLoginUserEmail());
             userService.updateUser(user);
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {

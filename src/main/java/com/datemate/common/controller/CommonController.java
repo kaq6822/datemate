@@ -1,5 +1,6 @@
 package com.datemate.common.controller;
 
+import com.datemate.api.member.model.Member;
 import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -13,6 +14,11 @@ public class CommonController {
 
     public String getLoginUserEmail() {
         return SecurityContextHolder.getContext().getAuthentication().getName();
+    }
+
+    public Integer getLoginUserSeq() {
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return member.getUserSeq();
     }
 
     /**
