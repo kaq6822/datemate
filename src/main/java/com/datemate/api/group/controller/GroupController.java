@@ -29,6 +29,7 @@ public class GroupController extends CommonController {
         }
 
         try {
+            group.setGroupOwner(this.getLoginUserSeq());
             groupService.addGroup(group);
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {

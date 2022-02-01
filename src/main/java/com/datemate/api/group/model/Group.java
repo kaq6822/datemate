@@ -21,6 +21,6 @@ public class Group extends AbstractTimestampEntity implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer groupId;
     private String groupName;
-    private String groupOwner;
+    private Integer groupOwner;
     private String groupDesc;
 }

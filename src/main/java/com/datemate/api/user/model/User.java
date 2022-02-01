@@ -18,6 +18,8 @@ public class User extends AbstractTimestampEntity implements Serializable {
     @Id
     private String email;
 
+    private String userId;
+
     private String userName;
 
     @ApiModelProperty(hidden = true)

@@ -24,6 +24,8 @@ public class Member extends AbstractTimestampEntity implements UserDetails {
     @Id
     private String email;
 
+    private String userId;
+
     @ApiModelProperty(hidden = true)
     private String userName;
 
