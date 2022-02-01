@@ -29,7 +29,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
     @Resource
     private JwtTokenUtil jwtTokenUtil;
 
-    private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(Arrays.asList("/api/member/signup", "/api/member/signin"));
+    private static final List<String> EXCLUDE_URL = Collections.unmodifiableList(Arrays.asList("/api/member/signup", "/api/member/signin", "/api/member/email-check"));
 
 
     @Override

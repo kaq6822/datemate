@@ -2,7 +2,6 @@ package com.datemate.api.member.controller;
 
 import com.datemate.api.member.model.Member;
 import com.datemate.api.member.service.MemberService;
-import com.datemate.api.user.service.UserService;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
