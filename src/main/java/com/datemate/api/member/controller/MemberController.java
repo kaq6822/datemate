@@ -2,6 +2,8 @@ package com.datemate.api.member.controller;
 
 import com.datemate.api.member.model.Member;
 import com.datemate.api.member.service.MemberService;
+import com.datemate.api.user.model.User;
+import com.datemate.api.user.service.UserService;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
@@ -9,6 +11,7 @@ import com.datemate.common.security.JwtTokenUtil;
 import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -22,6 +25,9 @@ public class MemberController extends CommonController {
 
     @Resource
     private MemberService memberService;
+
+    @Resource
+    private UserService userService;
 
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
@@ -82,8 +88,13 @@ public class MemberController extends CommonController {
             if (memberService.authenticateByEmailAndPassword(member.getEmail(), member.getPassword())) {
                 String token = jwtTokenUtil.generateToken(member.getEmail());
                 jsonMessage.addAttribute("token", token);
+                User user = userService.selectUserByEmail(member.getEmail());
+                jsonMessage.addAttribute("user", user);
             }
             jsonMessage.setResponseCode(Constants.SUCCESS);
+        } catch (UsernameNotFoundException ue) {
+            log.debug("User Name Not Found ERROR : {}", member.getEmail());
+            jsonMessage.setErrorMsgWithCode(this.getMessage("USERNAME_EXCEPTION"));
         } catch (Exception e) {
             log.error("Login error", e);
             jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));

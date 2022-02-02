@@ -11,11 +11,12 @@ import java.io.Serializable;
 @Data
 @Table(name = "dm_user_master")
 public class User extends AbstractTimestampEntity implements Serializable {
+    @Id
     @ApiModelProperty(hidden = true)
     @Column(insertable = false, updatable = false)
     private Integer userSeq;
 
-    @Id
+    @Column(unique = true)
     private String email;
 
     private String userId;

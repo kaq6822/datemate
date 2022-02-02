@@ -13,7 +13,8 @@ public class CommonController {
     private MessageSourceAccessor messageSourceAccessor;
 
     public String getLoginUserEmail() {
-        return SecurityContextHolder.getContext().getAuthentication().getName();
+        Member member = (Member) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return member.getEmail();
     }
 
     public Integer getLoginUserSeq() {

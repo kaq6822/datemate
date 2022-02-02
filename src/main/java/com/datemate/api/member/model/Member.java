@@ -16,12 +16,12 @@ import java.util.List;
 @Entity
 @Table(name = "dm_user_master")
 public class Member extends AbstractTimestampEntity implements UserDetails {
+    @Id
     @ApiModelProperty(hidden = true)
-    @Column(unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer userSeq;
 
-    @Id
+    @Column(unique = true)
     private String email;
 
     private String userId;
