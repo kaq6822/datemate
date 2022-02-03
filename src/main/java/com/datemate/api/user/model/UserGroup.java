@@ -1,12 +1,10 @@
 package com.datemate.api.user.model;
 
+import com.datemate.api.group.model.Group;
 import com.datemate.api.user.model.pk.UserGroupId;
 import lombok.Data;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -20,5 +18,10 @@ public class UserGroup implements Serializable {
     @Id
     private Integer groupId;
 
-    private String groupName;
+    @Column(nullable = false)
+    private Integer status = 0;
+
+    @OneToOne(targetEntity = Group.class, optional = false, fetch = FetchType.EAGER)
+    @JoinColumn(name = "userSeq", insertable = false, updatable = false)
+    private Group group;
 }

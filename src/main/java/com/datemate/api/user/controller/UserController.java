@@ -24,13 +24,13 @@ import java.util.Map;
 @Api("User Api")
 @Slf4j
 @RestController
-@RequestMapping("/api/user/")
+@RequestMapping("/api/user")
 public class UserController extends CommonController {
 
     @Resource
     private UserService userService;
 
-    @RequestMapping(value = "profile", method = RequestMethod.GET)
+    @RequestMapping(value = "/profile", method = RequestMethod.GET)
     @ResponseBody
     public JsonMessage getProfile(@RequestParam(name = "email") String email) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -46,7 +46,7 @@ public class UserController extends CommonController {
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (UsernameNotFoundException ue) {
             log.debug("User Not Found : {}", email);
-            jsonMessage.setErrorMsgWithCode(this.getMessage("NOT_FOUND_EXCEPTION", new Object[] { this.getMessage("COMMON_USER")}));
+            jsonMessage.setErrorMsgWithCode(this.getMessage("NOT_FOUND_EXCEPTION", new Object[]{this.getMessage("COMMON_USER")}));
         } catch (Exception e) {
             log.error("Login error", e);
             jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));
@@ -55,7 +55,7 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "profile", method = RequestMethod.POST)
+    @RequestMapping(value = "/profile", method = RequestMethod.PUT)
     @ResponseBody
     public JsonMessage modProfile(@RequestBody User user) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -77,7 +77,7 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "friend", method = RequestMethod.GET)
+    @RequestMapping(value = "/friend", method = RequestMethod.GET)
     @ResponseBody
     public JsonMessage getFriendList() {
         JsonMessage jsonMessage = new JsonMessage();
@@ -95,7 +95,7 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "friend", method = RequestMethod.POST)
+    @RequestMapping(value = "/friend", method = RequestMethod.POST)
     @ResponseBody
     public JsonMessage requestAddFriend(@RequestBody Map<String, Object> paramMap) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -124,17 +124,16 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "friend/accept", method = RequestMethod.POST)
+    @RequestMapping(value = "/friend/accept", method = RequestMethod.POST)
     @ResponseBody
-    public JsonMessage acceptFriend(@RequestBody Map<String, Object> paramMap) {
+    public JsonMessage acceptFriend(@RequestParam(name = "targetUserSeq") int targetUserSeq) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request Body : {}", paramMap);
+            log.debug("Request Param : {}", targetUserSeq);
         }
 
         try {
-            Integer targetUserSeq = (int) paramMap.get("targetUserSeq");
             if (this.getLoginUserSeq() == targetUserSeq) {
                 throw new ServiceException(this.getMessage("CANNOT_SELF_EXCEPTION"));
             }
@@ -160,17 +159,17 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "friend", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/friend", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonMessage unfriend(@RequestParam(name = "targetUserSeq") int targetUserSeq) {
+    public JsonMessage unfriend(@RequestBody Map<String, Object> paramMap) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request Param : {}", targetUserSeq);
+            log.debug("Request Param : {}", paramMap);
         }
 
         try {
-            userService.deleteUserRelation(this.getLoginUserSeq(), targetUserSeq);
+            userService.deleteUserRelation(this.getLoginUserSeq(), (int) paramMap.get("targetUserSeq"));
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("get Friend List Error", e);

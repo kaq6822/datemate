@@ -14,13 +14,13 @@ import javax.annotation.Resource;
 
 @Slf4j
 @RestController
-@RequestMapping("/calender/")
+@RequestMapping("/calender")
 public class TaskController extends CommonController {
 
     @Resource
     private TaskService taskService;
 
-    @RequestMapping(name = "detail", method = RequestMethod.POST)
+    @RequestMapping(name = "/detail", method = RequestMethod.POST)
     public JsonMessage calenderDetail(@RequestBody String taskId) {
         JsonMessage jsonMessage = new JsonMessage();
 

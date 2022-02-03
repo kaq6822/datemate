@@ -20,7 +20,7 @@ import java.util.Map;
 @Api(value = "Member Api")
 @Slf4j
 @RestController
-@RequestMapping("/api/member/")
+@RequestMapping("/api/member")
 public class MemberController extends CommonController {
 
     @Resource
@@ -32,7 +32,7 @@ public class MemberController extends CommonController {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
-    @RequestMapping(value = "email-check", method = RequestMethod.GET)
+    @RequestMapping(value = "/email-check", method = RequestMethod.GET)
     @ResponseBody
     public JsonMessage checkUserExist(@RequestParam(name = "email") String email) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -55,7 +55,7 @@ public class MemberController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "signup", method = RequestMethod.POST)
+    @RequestMapping(value = "/signup", method = RequestMethod.POST)
     @ResponseBody
     public JsonMessage signUp(@RequestBody Member member) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -75,7 +75,7 @@ public class MemberController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "signin", method = RequestMethod.POST)
+    @RequestMapping(value = "/signin", method = RequestMethod.POST)
     @ResponseBody
     public JsonMessage signIn(@RequestBody Member member) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -103,7 +103,7 @@ public class MemberController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "signout", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/signout", method = RequestMethod.DELETE)
     @ResponseBody
     public JsonMessage signOut(@RequestBody Map<String, Object> paramMap) {
         JsonMessage jsonMessage = new JsonMessage();
