@@ -32,20 +32,20 @@ public class UserController extends CommonController {
 
     @RequestMapping(value = "profile", method = RequestMethod.GET)
     @ResponseBody
-    public JsonMessage getProfile(@RequestParam Map<String, Object> param) {
+    public JsonMessage getProfile(@RequestParam(name = "email") String email) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request Body : {}", param);
+            log.debug("Request Body : {}", email);
         }
 
         try {
-            User user = userService.selectUserByEmail(StringUtils.toStr(param.get("email")));
+            User user = userService.selectUserByEmail(email);
 
             jsonMessage.addAttribute("profile", user);
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (UsernameNotFoundException ue) {
-            log.debug("User Not Found : {}", param);
+            log.debug("User Not Found : {}", email);
             jsonMessage.setErrorMsgWithCode(this.getMessage("NOT_FOUND_EXCEPTION", new Object[] { this.getMessage("COMMON_USER")}));
         } catch (Exception e) {
             log.error("Login error", e);
@@ -162,15 +162,14 @@ public class UserController extends CommonController {
 
     @RequestMapping(value = "friend", method = RequestMethod.DELETE)
     @ResponseBody
-    public JsonMessage unfriend(@RequestParam Map<String, Object> paramMap) {
+    public JsonMessage unfriend(@RequestParam(name = "targetUserSeq") int targetUserSeq) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
-            log.debug("Request Param : {}", paramMap);
+            log.debug("Request Param : {}", targetUserSeq);
         }
 
         try {
-            Integer targetUserSeq = StringUtils.string2integer(StringUtils.toStr(paramMap.get("targetUserSeq")));
             userService.deleteUserRelation(this.getLoginUserSeq(), targetUserSeq);
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {

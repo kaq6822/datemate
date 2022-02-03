@@ -34,7 +34,7 @@ public class MemberController extends CommonController {
 
     @RequestMapping(value = "email-check", method = RequestMethod.GET)
     @ResponseBody
-    public JsonMessage checkUserExist(@RequestParam String email) {
+    public JsonMessage checkUserExist(@RequestParam(name = "email") String email) {
         JsonMessage jsonMessage = new JsonMessage();
         if (log.isDebugEnabled()) {
             log.debug("Request Param : {}", email);
