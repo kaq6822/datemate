@@ -1,4 +1,4 @@
-package com.datemate.api.user.model.pk;
+package com.datemate.api.user.model.id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

@@ -1,7 +1,7 @@
 package com.datemate.api.user.dao;
 
 import com.datemate.api.user.model.UserGroup;
-import com.datemate.api.user.model.pk.UserGroupId;
+import com.datemate.api.user.model.id.UserGroupId;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -103,9 +103,29 @@ public class MemberController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "/signout", method = RequestMethod.DELETE)
+    @RequestMapping(value = "signout", method = RequestMethod.POST)
     @ResponseBody
-    public JsonMessage signOut(@RequestBody Map<String, Object> paramMap) {
+    public JsonMessage singout(@RequestBody Map<String, Object> paramMap) {
+        JsonMessage jsonMessage = new JsonMessage();
+
+        if (log.isDebugEnabled()) {
+            log.debug("Request Body : {}", paramMap);
+        }
+
+        try {
+            //TODO: FCM Puh Logout 기능 구현, JWT Token 만료? 처리
+            jsonMessage.setResponseCode(Constants.SUCCESS);
+        } catch (Exception e) {
+            log.error("signout Fail", e);
+            jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));
+        }
+
+        return jsonMessage;
+    }
+
+    @RequestMapping(value = "/remove", method = RequestMethod.DELETE)
+    @ResponseBody
+    public JsonMessage remove(@RequestBody Map<String, Object> paramMap) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {

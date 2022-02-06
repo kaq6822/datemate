@@ -1,6 +1,6 @@
 package com.datemate.api.user.model;
 
-import com.datemate.api.user.model.pk.UserTaskId;
+import com.datemate.api.user.model.id.UserTaskId;
 import com.datemate.common.model.AbstractTimestampEntity;
 import lombok.Data;
 

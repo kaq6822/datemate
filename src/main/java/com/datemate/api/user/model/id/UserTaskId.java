@@ -1,4 +1,4 @@
-package com.datemate.api.user.model.pk;
+package com.datemate.api.user.model.id;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -9,7 +9,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserGroupId implements Serializable {
+public class UserTaskId implements Serializable {
     private Integer userSeq;
-    private Integer groupId;
+    private Integer taskId;
 }

@@ -4,7 +4,7 @@ import com.datemate.api.user.dao.UserRelationRepository;
 import com.datemate.api.user.model.User;
 import com.datemate.api.user.dao.UserRepository;
 import com.datemate.api.user.model.UserRelation;
-import com.datemate.api.user.model.pk.UserRelationId;
+import com.datemate.api.user.model.id.UserRelationId;
 import com.datemate.api.user.service.UserService;
 import com.datemate.common.constants.Constants;
 import lombok.extern.slf4j.Slf4j;

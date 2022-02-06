@@ -1,6 +1,6 @@
 package com.datemate.api.user.model;
 
-import com.datemate.api.user.model.pk.UserRelationId;
+import com.datemate.api.user.model.id.UserRelationId;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;

@@ -1,6 +1,5 @@
 package com.datemate.api.user.controller;
 
-import com.datemate.api.member.model.Member;
 import com.datemate.api.user.model.User;
 import com.datemate.api.user.model.UserRelation;
 import com.datemate.api.user.service.UserService;
@@ -8,20 +7,14 @@ import com.datemate.common.ServiceException;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
-import com.datemate.common.util.StringUtils;
-import io.swagger.annotations.Api;
 import lombok.extern.slf4j.Slf4j;
-import org.bouncycastle.cert.ocsp.Req;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Api("User Api")
 @Slf4j
 @RestController
 @RequestMapping("/api/user")

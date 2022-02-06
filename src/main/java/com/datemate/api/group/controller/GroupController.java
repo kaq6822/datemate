@@ -8,7 +8,12 @@ import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -22,9 +27,9 @@ public class GroupController extends CommonController {
     @Resource
     private GroupService groupService;
 
-    @RequestMapping
+    @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
-    public JsonMessage getGroup(@RequestParam(name = "groupId") int groupId) {
+    public JsonMessage checkUserExist(@RequestParam(name = "email") int groupId) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
@@ -44,9 +49,9 @@ public class GroupController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(name = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public JsonMessage getGroupList() {
+    public JsonMessage checkUserExist() {
         JsonMessage jsonMessage = new JsonMessage();
 
         try {
@@ -62,7 +67,7 @@ public class GroupController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(name = "", method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST)
     @ResponseBody
     public JsonMessage addGroup(@RequestBody Group group) {
         JsonMessage jsonMessage = new JsonMessage();

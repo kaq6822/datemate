@@ -1,7 +1,7 @@
 package com.datemate.api.user.model;
 
 import com.datemate.api.group.model.Group;
-import com.datemate.api.user.model.pk.UserGroupId;
+import com.datemate.api.user.model.id.UserGroupId;
 import lombok.Data;
 
 import javax.persistence.*;
