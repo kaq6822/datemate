@@ -60,7 +60,7 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
     @Override
     public void disableUser(String email) {
         User user = userRepository.findByEmail(email).get();
-        user.setStatus("1");
+        user.setStatus(Constants.INACTIVE);
         log.debug("disable User: {}", user);
         userRepository.save(user);
     }

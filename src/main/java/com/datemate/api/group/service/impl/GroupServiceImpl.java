@@ -5,6 +5,7 @@ import com.datemate.api.group.model.Group;
 import com.datemate.api.group.service.GroupService;
 import com.datemate.api.user.dao.UserGroupRepository;
 import com.datemate.api.user.model.UserGroup;
+import com.datemate.common.constants.Constants;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -47,7 +48,7 @@ public class GroupServiceImpl implements GroupService {
 
     @Override
     public void leaveGroup(UserGroup userGroup) {
-        userGroup.setStatus(1);
+        userGroup.setStatus(Constants.INACTIVE);
         userGroupRepository.save(userGroup);
     }
 }

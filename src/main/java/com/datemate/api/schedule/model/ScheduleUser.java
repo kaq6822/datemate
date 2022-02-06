@@ -1,14 +1,11 @@
 package com.datemate.api.schedule.model;
 
 import com.datemate.api.schedule.model.id.ScheduleUserId;
+import com.datemate.common.constants.Constants;
 import com.datemate.common.model.AbstractTimestampEntity;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
@@ -17,6 +14,7 @@ import java.util.Date;
 @Table(name = "dm_schedule_user")
 public class ScheduleUser extends AbstractTimestampEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int scheduleSeq;
 
     @Id
@@ -30,10 +28,13 @@ public class ScheduleUser extends AbstractTimestampEntity {
 
     private Date endDate;
 
-    private Character type;
+    // P: 개인, O: 오픈
+    private Character type = 'P';
 
-    private Integer status;
+    // 0: 미완료, 1: 완료, 2: 약속 신청 중, 3: 약속 신청 수락 대기
+    @Column(nullable = false)
+    private Integer status = Constants.ACTIVE;
 
-    private Integer createUserSeq;
-    // target???
+    // 약속 신청자, 신청 대상
+    private Integer targetUserSeq;
 }
