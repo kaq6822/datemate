@@ -1,5 +1,6 @@
 package com.datemate.api.schedule.controller;
 
+import com.datemate.api.group.service.GroupService;
 import com.datemate.api.schedule.model.ScheduleGroup;
 import com.datemate.api.schedule.model.ScheduleGroupUser;
 import com.datemate.api.schedule.model.id.ScheduleGroupId;
@@ -8,6 +9,7 @@ import com.datemate.api.schedule.service.ScheduleService;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -26,6 +30,9 @@ public class ScheduleGroupController extends CommonController {
 
     @Resource
     private ScheduleService scheduleService;
+
+    @Resource
+    private GroupService groupService;
 
     @RequestMapping(value = "/checkList", method = RequestMethod.GET)
     @ResponseBody
@@ -54,6 +61,7 @@ public class ScheduleGroupController extends CommonController {
         }
 
         try {
+            // TODO: 해당 그룹 소속원인지 확인 로직 추가
             for (ScheduleGroupId scheduleGroupId : scheduleGroupIdList) {
                 scheduleService.checkGroupSchedule(new ScheduleGroupUserId(scheduleGroupId, this.getLoginUserSeq()));
             }
@@ -88,7 +96,7 @@ public class ScheduleGroupController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(value = "/confirmList", method = RequestMethod.GET)
+    @RequestMapping(value = "/confirm", method = RequestMethod.GET)
     @ResponseBody
     public JsonMessage getConfirmScheduleList(@RequestParam(name = "groupId") Integer groupId) {
         JsonMessage jsonMessage = new JsonMessage();
@@ -116,6 +124,11 @@ public class ScheduleGroupController extends CommonController {
 
         try {
             scheduleService.confirmGroupScheduleYN(new ScheduleGroupUserId(scheduleGroupId, this.getLoginUserSeq()), 'Y');
+
+            if (scheduleService.countConfirmGroupSchedule(scheduleGroupId) >= groupService.countGroupUser(scheduleGroupId.getGroupId())) {
+                scheduleService.saveConfirmSchedule(new ScheduleGroup(scheduleGroupId.getScheduleDate(), scheduleGroupId.getGroupId()));
+            }
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("Confirm Schedule Fail", e);
@@ -136,6 +149,11 @@ public class ScheduleGroupController extends CommonController {
 
         try {
             scheduleService.confirmGroupScheduleYN(new ScheduleGroupUserId(scheduleGroupId, this.getLoginUserSeq()), 'N');
+
+            if(scheduleService.selectConfirmSchedule(scheduleGroupId) != null) {
+                scheduleService.deleteConfirmSchedule(scheduleGroupId);
+            }
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("Confirm Schedule Fail", e);

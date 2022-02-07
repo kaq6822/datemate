@@ -70,6 +70,24 @@ public class UserController extends CommonController {
         return jsonMessage;
     }
 
+    @RequestMapping(value = "/friend", method = RequestMethod.GET, params = "status")
+    @ResponseBody
+    public JsonMessage getFriendListByStatus(@RequestParam(name = "status") Character status) {
+        JsonMessage jsonMessage = new JsonMessage();
+
+        try {
+            List<UserRelation> userList = userService.selectRelationUserList(this.getLoginUserSeq(), status);
+
+            jsonMessage.addAttribute("userList", userList);
+            jsonMessage.setResponseCode(Constants.SUCCESS);
+        } catch (Exception e) {
+            log.error("get Friend List Error", e);
+            jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));
+        }
+
+        return jsonMessage;
+    }
+
     @RequestMapping(value = "/friend", method = RequestMethod.GET)
     @ResponseBody
     public JsonMessage getFriendList() {
@@ -131,7 +149,7 @@ public class UserController extends CommonController {
                 throw new ServiceException(this.getMessage("CANNOT_SELF_EXCEPTION"));
             }
 
-            UserRelation userRelation = userService.selectRelationUser(this.getLoginUserSeq(), targetUserSeq);
+            UserRelation userRelation = userService.selectRelationUser(targetUserSeq, this.getLoginUserSeq());
 
             if (userRelation.getStatus().equals(Constants.WAITING)) {
                 userService.acceptUserRelation(this.getLoginUserSeq(), targetUserSeq);

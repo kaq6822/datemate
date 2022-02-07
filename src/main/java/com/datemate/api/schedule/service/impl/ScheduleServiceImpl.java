@@ -34,6 +34,16 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
+    public ScheduleGroup selectConfirmSchedule(ScheduleGroupId scheduleGroupId) {
+        return scheduleGroupRepository.getById(scheduleGroupId);
+    }
+
+    @Override
+    public void deleteConfirmSchedule(ScheduleGroupId scheduleGroupId) {
+        scheduleGroupRepository.deleteById(scheduleGroupId);
+    }
+
+    @Override
     public List<ScheduleGroupUser> selectCheckScheduleListByGroupId(Integer groupId) {
         return scheduleGroupUserRepository.getScheduleGroupUserByGroupIdAndCheckYn(groupId, 'Y');
     }
@@ -50,10 +60,14 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void confirmGroupScheduleYN(ScheduleGroupUserId scheduleGroupUserId, Character confirmYN) {
-        // TODO: Will find more better way
-        ScheduleGroupUser scheduleGroupUser = scheduleGroupUserRepository.findById(scheduleGroupUserId).orElseThrow();
+        ScheduleGroupUser scheduleGroupUser = scheduleGroupUserRepository.findById(scheduleGroupUserId).orElse(new ScheduleGroupUser(scheduleGroupUserId, null, null));
         scheduleGroupUser.setConfirmYn(confirmYN);
         scheduleGroupUserRepository.save(scheduleGroupUser);
+    }
+
+    @Override
+    public Long countConfirmGroupSchedule(ScheduleGroupId scheduleGroupId) {
+        return scheduleGroupUserRepository.countScheduleGroupUserByGroupIdAndScheduleDateAndConfirmYn(scheduleGroupId.getGroupId(), scheduleGroupId.getScheduleDate(), 'Y');
     }
 
     @Override
@@ -62,8 +76,8 @@ public class ScheduleServiceImpl implements ScheduleService {
     }
 
     @Override
-    public ScheduleUser selectSchedule(ScheduleUserId scheduleUserId) {
-        return scheduleUserRepository.findById(scheduleUserId).orElseThrow(() -> new IllegalArgumentException("No such Data"));
+    public ScheduleUser selectSchedule(Integer scheduleSeq) {
+        return scheduleUserRepository.findById(scheduleSeq).orElseThrow(() -> new IllegalArgumentException("No such Data"));
     }
 
     @Override
@@ -73,6 +87,11 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public void deleteScheduleUser(ScheduleUserId scheduleUserId) {
-        scheduleUserRepository.deleteById(scheduleUserId);
+        scheduleUserRepository.deleteById(scheduleUserId.getScheduleSeq());
+    }
+
+    @Override
+    public void saveConfirmSchedule(ScheduleGroup scheduleGroup) {
+        scheduleGroupRepository.save(scheduleGroup);
     }
 }

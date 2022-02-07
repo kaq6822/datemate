@@ -8,6 +8,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ScheduleUserRepository extends JpaRepository<ScheduleUser, ScheduleUserId> {
+public interface ScheduleUserRepository extends JpaRepository<ScheduleUser, Integer> {
     List<ScheduleUser> findAllByUserSeq(Integer userSeq);
 }

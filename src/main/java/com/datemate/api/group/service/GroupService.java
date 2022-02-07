@@ -6,7 +6,7 @@ import com.datemate.api.user.model.UserGroup;
 import java.util.List;
 
 public interface GroupService {
-    Group selectGroup(int groupId);
+    Group selectGroup(int groupId) throws Exception;
 
     List<UserGroup> selectGroupListByUserSeq(int userSeq);
 
@@ -17,4 +17,6 @@ public interface GroupService {
     void deleteGroup(int groupId);
 
     void leaveGroup(UserGroup userGroup);
+
+    Long countGroupUser(Integer groupId);
 }

@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -47,8 +48,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserRelation selectRelationUser(Integer userSeq, Integer targetUserSeq) {
-        return userRelationRepository.findById(new UserRelationId(userSeq, targetUserSeq)).get();
+    public List<UserRelation> selectRelationUserList(Integer userSeq, Character status) {
+        return userRelationRepository.findByUserSeqAndStatus(userSeq, status);
+    }
+
+    @Override
+    public UserRelation selectRelationUser(Integer userSeq, Integer targetUserSeq) throws EntityNotFoundException {
+        return userRelationRepository.findById(new UserRelationId(userSeq, targetUserSeq)).orElseThrow(() -> new EntityNotFoundException("Not Found UserRelation"));
     }
 
     @Override

@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface UserRelationRepository extends JpaRepository<UserRelation, UserRelationId> {
     List<UserRelation> findByUserSeq(Integer userSeq);
+    List<UserRelation> findByUserSeqAndStatus(Integer userSeq, Character status);
 }

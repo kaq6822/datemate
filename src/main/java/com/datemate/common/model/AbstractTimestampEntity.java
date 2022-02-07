@@ -4,16 +4,14 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
+import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 public class AbstractTimestampEntity {
     @CreatedDate
+    @Column(updatable = false)
     private Date createDate;
 
     @LastModifiedDate

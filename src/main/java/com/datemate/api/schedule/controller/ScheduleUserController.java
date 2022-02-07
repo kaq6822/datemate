@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 
 @Slf4j
@@ -55,6 +56,8 @@ public class ScheduleUserController extends CommonController {
             List<ScheduleUser> scheduleUserList = scheduleService.selectScheduleListByUserSeq(this.getLoginUserSeq());
             jsonMessage.addAttribute("taskList", scheduleUserList);
             jsonMessage.setResponseCode(Constants.SUCCESS);
+        } catch (EntityNotFoundException nfe) {
+            jsonMessage.setErrorMsgWithCode(this.getMessage("NO_FRIEND_EXCEPTION"));
         } catch (ServiceException se) {
             jsonMessage.setErrorMsgWithCode(se.getMessage());
         } catch (Exception e) {
@@ -169,7 +172,7 @@ public class ScheduleUserController extends CommonController {
             if (!userRelation.getStatus().equals(Constants.COMPLETE)) {
                 throw new ServiceException(this.getMessage("NO_FRIEND_EXCEPTION"));
             }
-            ScheduleUser scheduleUser = scheduleService.selectSchedule(new ScheduleUserId(scheduleUserId.getScheduleSeq(), this.getLoginUserSeq()));
+            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getUserSeq());
 
             // 약속 요청 대상자 정보 변경
             scheduleUser.setStatus(Constants.APPROVE_WAIT);
@@ -204,7 +207,7 @@ public class ScheduleUserController extends CommonController {
                 throw new ServiceException(this.getMessage("NO_PERMISSION_EXCEPTION"));
             }
 
-            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId);
+            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getScheduleSeq());
             if (scheduleUser.getStatus().equals(Constants.APPROVE_WAIT)) {
                 // 수락 대상자 상태 변경
                 scheduleUser.setStatus(Constants.ACTIVE);

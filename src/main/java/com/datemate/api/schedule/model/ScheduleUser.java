@@ -1,8 +1,8 @@
 package com.datemate.api.schedule.model;
 
-import com.datemate.api.schedule.model.id.ScheduleUserId;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.model.AbstractTimestampEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.*;
@@ -10,22 +10,22 @@ import java.util.Date;
 
 @Entity
 @Data
-@IdClass(ScheduleUserId.class)
 @Table(name = "dm_schedule_user")
 public class ScheduleUser extends AbstractTimestampEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int scheduleSeq;
+    private Integer scheduleSeq;
 
-    @Id
     private Integer userSeq;
 
     private String scheduleName;
 
     private String scheduleDesc;
 
+    @JsonFormat(pattern = "yyyyMMddHHmm")
     private Date startDate;
 
+    @JsonFormat(pattern = "yyyyMMddHHmm")
     private Date endDate;
 
     // P: 개인, O: 오픈

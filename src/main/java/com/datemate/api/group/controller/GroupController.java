@@ -27,9 +27,9 @@ public class GroupController extends CommonController {
     @Resource
     private GroupService groupService;
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = RequestMethod.GET, params = "groupId")
     @ResponseBody
-    public JsonMessage checkUserExist(@RequestParam(name = "email") int groupId) {
+    public JsonMessage getGroup(@RequestParam(name = "groupId") Integer groupId) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {
@@ -51,7 +51,7 @@ public class GroupController extends CommonController {
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ResponseBody
-    public JsonMessage checkUserExist() {
+    public JsonMessage getGroupList() {
         JsonMessage jsonMessage = new JsonMessage();
 
         try {
@@ -78,6 +78,7 @@ public class GroupController extends CommonController {
         try {
             group.setGroupOwner(this.getLoginUserSeq());
             groupService.addGroup(group);
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("addGroup Fail", e);
@@ -96,6 +97,7 @@ public class GroupController extends CommonController {
         }
 
         try {
+            // TODO: 친구 상태인지 확인하는 기능 추가
             groupService.inviteGroup(userGroup);
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
@@ -115,7 +117,15 @@ public class GroupController extends CommonController {
         }
 
         try {
-            groupService.leaveGroup(userGroup);
+            // TODO: Group Owner도 강퇴 할 수 있도록 구현
+            // TODO: Group Owner가 나갔을 경우 로직도 구현
+            if (userGroup.getUserSeq() == this.getLoginUserSeq()) {
+                groupService.leaveGroup(userGroup);
+            } else {
+                throw new ServiceException(this.getMessage("NO_PERMISSION_EXCEPTION"));
+            }
+        } catch (ServiceException se) {
+            jsonMessage.setErrorMsgWithCode(se.getMessage());
         } catch (Exception e) {
             jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));
         }
@@ -123,7 +133,7 @@ public class GroupController extends CommonController {
         return jsonMessage;
     }
 
-    @RequestMapping(name = "", method = RequestMethod.DELETE)
+    @RequestMapping(method = RequestMethod.DELETE)
     @ResponseBody
     public JsonMessage delGroup(@RequestBody Map<String, Object> paramMap) {
         JsonMessage jsonMessage = new JsonMessage();

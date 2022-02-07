@@ -9,10 +9,14 @@ import com.datemate.common.controller.CommonController;
 import com.datemate.common.json.JsonMessage;
 import com.datemate.common.security.JwtTokenUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -76,8 +80,12 @@ public class MemberController extends CommonController {
     }
 
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "email", value = "사용자 이메일", required = true),
+            @ApiImplicitParam(name = "password", value = "패스워드", required = true)
+    })
     @ResponseBody
-    public JsonMessage signIn(@RequestBody Member member) {
+    public JsonMessage signIn(@ApiIgnore @RequestBody Member member) {
         JsonMessage jsonMessage = new JsonMessage();
 
         if (log.isDebugEnabled()) {

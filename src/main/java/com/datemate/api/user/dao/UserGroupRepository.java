@@ -12,4 +12,6 @@ public interface UserGroupRepository extends JpaRepository<UserGroup, UserGroupI
     List<UserGroup> findByUserSeq(Integer userSeq);
 
     void deleteAllByGroupId(Integer groupId);
+
+    Long countUserGroupByGroupId(Integer groupId);
 }
