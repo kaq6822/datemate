@@ -49,10 +49,13 @@ public class ScheduleUserController extends CommonController {
         JsonMessage jsonMessage = new JsonMessage();
 
         try {
-            UserRelation userRelation = userService.selectRelationUser(userSeq, this.getLoginUserSeq());
-            if (!userRelation.getStatus().equals(Constants.COMPLETE)) {
-                throw new ServiceException(this.getMessage("NO_FRIEND_EXCEPTION"));
+            if (userSeq != this.getLoginUserSeq()) {
+                UserRelation userRelation = userService.selectRelationUser(userSeq, this.getLoginUserSeq());
+                if (!userRelation.getStatus().equals(Constants.COMPLETE)) {
+                    throw new ServiceException(this.getMessage("NO_FRIEND_EXCEPTION"));
+                }
             }
+
             List<ScheduleUser> scheduleUserList = scheduleService.selectScheduleListByUserSeq(this.getLoginUserSeq());
             jsonMessage.addAttribute("taskList", scheduleUserList);
             jsonMessage.setResponseCode(Constants.SUCCESS);
@@ -106,23 +109,22 @@ public class ScheduleUserController extends CommonController {
         }
 
         try {
-            if (scheduleUser.getUserSeq() != this.getLoginUserSeq()) {
+            ScheduleUser originSchedule = scheduleService.selectSchedule(scheduleUser.getScheduleSeq());
+
+            if (originSchedule.getUserSeq() != this.getLoginUserSeq() || originSchedule.getTargetUserSeq() != scheduleUser.getTargetUserSeq()) {
                 log.error("An attempt was made to perform an unauthorized operation: {} => {}", this.getLoginUserSeq(), scheduleUser);
                 throw new ServiceException(this.getMessage("NO_PERMISSION_EXCEPTION"));
             }
 
-            if (scheduleUser.getTargetUserSeq() != null && scheduleUser.getUserSeq() != scheduleUser.getTargetUserSeq()) {
-                // 약속 신청자 상태로 변경 및 정보 수정
-                scheduleUser.setStatus(Constants.APPROVE_REQUEST);
-                scheduleService.saveScheduleUser(scheduleUser);
+            if (originSchedule.getStatus() == Constants.APPROVE_REQUEST && originSchedule.getStatus() != scheduleUser.getStatus()) {
+                log.error("Try to change Status without accept schedule request");
+                throw new ServiceException(this.getMessage("NOT_ACCEPT_EXCEPTION"));
+            }
 
-                // 약속 신청 대상자 상태로 변경 및 정보 수정
-                scheduleUser.setStatus(Constants.APPROVE_WAIT);
-                scheduleUser.setUserSeq(scheduleUser.getTargetUserSeq());
-                scheduleUser.setTargetUserSeq(this.getLoginUserSeq());
-                scheduleService.saveScheduleUser(scheduleUser);
-            } else {
-                scheduleService.saveScheduleUser(scheduleUser);
+            scheduleService.saveScheduleUser(scheduleUser);
+
+            if (originSchedule.getTargetUserSeq() != null) {
+                // TODO: 약속 신청자 상태에게 스케줄 변경 Push 알람
             }
 
             jsonMessage.setResponseCode(Constants.SUCCESS);
@@ -172,17 +174,9 @@ public class ScheduleUserController extends CommonController {
             if (!userRelation.getStatus().equals(Constants.COMPLETE)) {
                 throw new ServiceException(this.getMessage("NO_FRIEND_EXCEPTION"));
             }
-            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getUserSeq());
-
-            // 약속 요청 대상자 정보 변경
-            scheduleUser.setStatus(Constants.APPROVE_WAIT);
-            scheduleUser.setTargetUserSeq(this.getLoginUserSeq());
-            scheduleService.saveScheduleUser(scheduleUser);
-
-            // 약속 요청자 추가
-            scheduleUser.setUserSeq(this.getLoginUserSeq());
+            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getScheduleSeq());
+            scheduleUser.setTargetUserSeq(scheduleUserId.getUserSeq());
             scheduleUser.setStatus(Constants.APPROVE_REQUEST);
-            scheduleUser.setTargetUserSeq(scheduleUser.getUserSeq());
             scheduleService.saveScheduleUser(scheduleUser);
 
             jsonMessage.setResponseCode(Constants.SUCCESS);
@@ -202,29 +196,26 @@ public class ScheduleUserController extends CommonController {
         JsonMessage jsonMessage = new JsonMessage();
 
         try {
-            if (scheduleUserId.getUserSeq() != this.getLoginUserSeq()) {
+            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getScheduleSeq());
+
+//            if (scheduleUserId.getUserSeq() != this.getLoginUserSeq()) {
+            if (scheduleUser.getTargetUserSeq() != this.getLoginUserSeq()) {
                 log.error("An attempt was made to perform an unauthorized operation: {} => {}", this.getLoginUserSeq(), scheduleUserId);
                 throw new ServiceException(this.getMessage("NO_PERMISSION_EXCEPTION"));
             }
 
-            ScheduleUser scheduleUser = scheduleService.selectSchedule(scheduleUserId.getScheduleSeq());
-            if (scheduleUser.getStatus().equals(Constants.APPROVE_WAIT)) {
-                // 수락 대상자 상태 변경
+            if (scheduleUser.getStatus().equals(Constants.APPROVE_REQUEST)) {
                 scheduleUser.setStatus(Constants.ACTIVE);
-                scheduleService.saveScheduleUser(scheduleUser);
-
-                // 요청자 상태 변경
-                scheduleUser.setUserSeq(scheduleUser.getTargetUserSeq());
-                scheduleUser.setTargetUserSeq(this.getLoginUserSeq());
                 scheduleService.saveScheduleUser(scheduleUser);
             } else if (scheduleUser.getStatus().equals(Constants.ACTIVE)) {
                 throw new ServiceException(this.getMessage("ALREADY_ACCEPT_EXCEPTION"));
             } else {
                 throw new Exception("User Relation ERROR: " + scheduleUser);
             }
+            jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("acceptUserSchedule Fail", e);
-            jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCPETION"));
+            jsonMessage.setErrorMsgWithCode(this.getMessage("DEFAULT_EXCEPTION"));
         }
 
         return jsonMessage;

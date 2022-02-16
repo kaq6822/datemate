@@ -72,7 +72,9 @@ public class ScheduleServiceImpl implements ScheduleService {
 
     @Override
     public List<ScheduleUser> selectScheduleListByUserSeq(Integer userSeq) {
-        return scheduleUserRepository.findAllByUserSeq(userSeq);
+        List<ScheduleUser> scheduleUserList = scheduleUserRepository.findAllByUserSeq(userSeq);
+        scheduleUserList.addAll(scheduleUserRepository.findAllByTargetUserSeq(userSeq));
+        return scheduleUserList;
     }
 
     @Override

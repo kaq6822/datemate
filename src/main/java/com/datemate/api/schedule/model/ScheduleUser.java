@@ -16,6 +16,7 @@ public class ScheduleUser extends AbstractTimestampEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer scheduleSeq;
 
+    @Column(nullable = false)
     private Integer userSeq;
 
     private String scheduleName;
@@ -31,7 +32,7 @@ public class ScheduleUser extends AbstractTimestampEntity {
     // P: 개인, O: 오픈
     private Character type = 'P';
 
-    // 0: 미완료, 1: 완료, 2: 약속 신청 중, 3: 약속 신청 수락 대기
+    // 0: 미완료, 1: 완료, 2: 약속 신청 중
     @Column(nullable = false)
     private Integer status = Constants.ACTIVE;
 
