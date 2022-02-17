@@ -6,6 +6,7 @@ import com.datemate.api.user.service.UserService;
 import com.datemate.common.ServiceException;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
+import com.datemate.common.firebase.FCMService;
 import com.datemate.common.json.JsonMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -22,6 +23,9 @@ public class UserController extends CommonController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private FCMService fcmService;
 
     @RequestMapping(value = "/profile", method = RequestMethod.GET)
     @ResponseBody
@@ -123,6 +127,9 @@ public class UserController extends CommonController {
 
             userService.addUserRelation(this.getLoginUserSeq(), targetUserSeq);
 
+            User user = userService.selectUserBySeq(this.getLoginUserSeq());
+            fcmService.send(targetUserSeq, this.getMessage("COMMON_FRIEND"), this.getMessage("FCM_FRIEND_REQUEST", new Object[]{user.getUserName()}));
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (ServiceException se) {
             log.debug(se.getMessage());
@@ -158,6 +165,10 @@ public class UserController extends CommonController {
             } else {
                 throw new Exception("User Relation ERROR: " + userRelation);
             }
+
+            User user = userService.selectUserBySeq(this.getLoginUserSeq());
+            fcmService.send(targetUserSeq, this.getMessage("COMMON_FRIEND"), this.getMessage("FCM_FRIEND_RESPONSE", new Object[]{user.getUserName()}));
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (ServiceException se) {
             log.error("{}", se.getMessage());

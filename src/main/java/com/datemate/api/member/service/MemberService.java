@@ -16,4 +16,10 @@ public interface MemberService {
 
     boolean authenticateByEmailAndPassword(String email, String passwd) throws BadCredentialsException, UsernameNotFoundException;
 
+    void saveUserToken(Integer userSeq, String Token);
+
+    String selectUserToken(Integer userSeq);
+
+    void removeUserToken(Integer userSeq);
+
 }

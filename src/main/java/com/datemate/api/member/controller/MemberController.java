@@ -99,6 +99,9 @@ public class MemberController extends CommonController {
                 jsonMessage.addAttribute("token", token);
                 User user = userService.selectUserByEmail(member.getEmail());
                 jsonMessage.addAttribute("user", user);
+
+                // Save Token For FCM
+                memberService.saveUserToken(member.getUserSeq(), member.getToken());
             }
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (UsernameNotFoundException ue) {
@@ -122,7 +125,7 @@ public class MemberController extends CommonController {
         }
 
         try {
-            //TODO: FCM Puh Logout 기능 구현, JWT Token 만료? 처리
+            memberService.removeUserToken(this.getLoginUserSeq());
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("signout Fail", e);

@@ -3,11 +3,13 @@ package com.datemate.api.schedule.controller;
 import com.datemate.api.schedule.model.ScheduleUser;
 import com.datemate.api.schedule.model.id.ScheduleUserId;
 import com.datemate.api.schedule.service.ScheduleService;
+import com.datemate.api.user.model.User;
 import com.datemate.api.user.model.UserRelation;
 import com.datemate.api.user.service.UserService;
 import com.datemate.common.ServiceException;
 import com.datemate.common.constants.Constants;
 import com.datemate.common.controller.CommonController;
+import com.datemate.common.firebase.FCMService;
 import com.datemate.common.json.JsonMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,6 +27,9 @@ public class ScheduleUserController extends CommonController {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private FCMService fcmService;
 
     @RequestMapping(value = "/task", method = RequestMethod.GET)
     @ResponseBody
@@ -123,8 +128,9 @@ public class ScheduleUserController extends CommonController {
 
             scheduleService.saveScheduleUser(scheduleUser);
 
-            if (originSchedule.getTargetUserSeq() != null) {
-                // TODO: 약속 신청자 상태에게 스케줄 변경 Push 알람
+            if (originSchedule.getTargetUserSeq() != null && originSchedule.getStatus() == Constants.ACTIVE) {
+                User user = userService.selectUserBySeq(this.getLoginUserSeq());
+                fcmService.send(scheduleUser.getTargetUserSeq(), this.getMessage("COMMON_SCHEDULE"), this.getMessage("FCM_USER_SCHEDULE_CHANGE", new Object[]{user.getUserName()}));
             }
 
             jsonMessage.setResponseCode(Constants.SUCCESS);
@@ -179,6 +185,9 @@ public class ScheduleUserController extends CommonController {
             scheduleUser.setStatus(Constants.APPROVE_REQUEST);
             scheduleService.saveScheduleUser(scheduleUser);
 
+            User user = userService.selectUserBySeq(this.getLoginUserSeq());
+            fcmService.send(scheduleUser.getTargetUserSeq(), this.getMessage("COMMON_SCHEDULE"), this.getMessage("FCM_USER_SCHEDULE_REQUEST", new Object[]{user.getUserName()}));
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (ServiceException se) {
             jsonMessage.setErrorMsgWithCode(se.getMessage());
@@ -212,6 +221,10 @@ public class ScheduleUserController extends CommonController {
             } else {
                 throw new Exception("User Relation ERROR: " + scheduleUser);
             }
+
+            User user = userService.selectUserBySeq(this.getLoginUserSeq());
+            fcmService.send(scheduleUser.getTargetUserSeq(), this.getMessage("COMMON_SCHEDULE"), this.getMessage("FCM_USER_SCHEDULE_RESPONSE", new Object[]{user.getUserName()}));
+
             jsonMessage.setResponseCode(Constants.SUCCESS);
         } catch (Exception e) {
             log.error("acceptUserSchedule Fail", e);

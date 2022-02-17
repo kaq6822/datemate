@@ -18,6 +18,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.persistence.EntityNotFoundException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -76,6 +77,26 @@ public class MemberServiceImpl implements MemberService, UserDetailsService {
         }
 
         return true;
+    }
+
+    @Override
+    public void saveUserToken(Integer userSeq, String Token) {
+        Member member = memberRepository.findById(userSeq).orElseThrow(() -> new EntityNotFoundException());
+        member.setToken(Token);
+        memberRepository.save(member);
+    }
+
+    @Override
+    public String selectUserToken(Integer userSeq) {
+        Member member = memberRepository.findById(userSeq).orElseThrow(() -> new EntityNotFoundException());
+        return member.getToken();
+    }
+
+    @Override
+    public void removeUserToken(Integer userSeq) {
+        Member member = memberRepository.findById(userSeq).orElseThrow(() -> new EntityNotFoundException());
+        member.setToken(null);
+        memberRepository.save(member);
     }
 
 }
