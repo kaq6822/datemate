@@ -82,7 +82,8 @@ public class MemberController extends CommonController {
     @RequestMapping(value = "/signin", method = RequestMethod.POST)
     @ApiImplicitParams({
             @ApiImplicitParam(name = "email", value = "사용자 이메일", required = true),
-            @ApiImplicitParam(name = "password", value = "패스워드", required = true)
+            @ApiImplicitParam(name = "password", value = "패스워드", required = true),
+            @ApiImplicitParam(name = "token", value = "FCM Token", required = true)
     })
     @ResponseBody
     public JsonMessage signIn(@ApiIgnore @RequestBody Member member) {
